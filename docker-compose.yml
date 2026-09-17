@@ -1,0 +1,33 @@
+services:
+
+  salt-master:
+    build:
+      context: .
+      dockerfile: docker/master/Dockerfile
+    container_name: salt-master
+    hostname: salt-master
+    networks:
+      - salt-net
+    volumes:
+      - ./master/config:/etc/salt/master.d
+      - ./master/file_roots:/srv/salt
+      - ./pillar:/srv/pillar
+      - ./master/pki:/etc/salt/pki/master
+
+  salt-minion:
+    build:
+      context: .
+      dockerfile: docker/minion/Dockerfile
+    container_name: salt-minion
+    hostname: salt-minion
+    depends_on:
+      - salt-master
+    networks:
+      - salt-net
+    volumes:
+      - ./minion/config:/etc/salt/minion.d
+      - ./minion/pki:/etc/salt/pki/minion
+
+networks:
+  salt-net:
+    driver: bridge
