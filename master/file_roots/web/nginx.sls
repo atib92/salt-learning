@@ -4,7 +4,7 @@ nginx:
 nginx_config:
   file.managed:
     - name: /etc/nginx/sites-available/salt-learning
-    - source: salt://nginx.conf.jinja
+    - source: salt://web/nginx.conf.jinja
     - template: jinja
     - require:
       - pkg: nginx
