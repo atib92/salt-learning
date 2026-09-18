@@ -28,6 +28,48 @@ services:
       - ./minion/config:/etc/salt/minion.d
       - ./minion/pki:/etc/salt/pki/minion
 
+  worker-1:
+    build:
+      context: .
+      dockerfile: docker/worker/Dockerfile
+    container_name: worker-1
+    hostname: worker-1
+    depends_on:
+      - salt-master
+    networks:
+      - salt-net
+    volumes:
+      - ./worker/config:/etc/salt/minion.d
+      - ./worker/pki:/etc/salt/pki/minion
+
+  web-1:
+    build:
+      context: .
+      dockerfile: docker/minion/Dockerfile
+    container_name: web-1
+    hostname: web-1
+    depends_on:
+      - salt-master
+    networks:
+      - salt-net
+    volumes:
+      - ./web-1/config:/etc/salt/minion.d
+      - ./web-1/pki:/etc/salt/pki/minion
+  
+  web-2:
+    build:
+      context: .
+      dockerfile: docker/minion/Dockerfile
+    container_name: web-2
+    hostname: web-2
+    depends_on:
+      - salt-master
+    networks:
+      - salt-net
+    volumes:
+      - ./web-2/config:/etc/salt/minion.d
+      - ./web-2/pki:/etc/salt/pki/minion
+
 networks:
   salt-net:
     driver: bridge

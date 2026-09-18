@@ -1,3 +1,6 @@
 base:
   'G@role:web':
-    - web.nginx
+    - web
+
+  'G@role:worker':
+    - worker
