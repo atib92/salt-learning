@@ -1,0 +1,4 @@
+dev:
+  '*':
+    - common
+    - web
