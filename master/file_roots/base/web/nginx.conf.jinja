@@ -1,0 +1,9 @@
+{% from "web/map.jinja" import nginx, app with context %}
+
+server {
+    listen {{ nginx.port }};
+
+    location / {
+        return 200 "Hello from {{ app.name }}!\n";
+    }
+}

@@ -1,7 +1,0 @@
-server {
-    listen {{ pillar['nginx']['port'] }};
-
-    location / {
-        return 200 "Hello there  {{ pillar['owner']['name']}} !! from {{ pillar['app']['name'] }}!\n";
-    }
-}

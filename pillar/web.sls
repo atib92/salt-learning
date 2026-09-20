@@ -1,5 +1,5 @@
 nginx:
-  port: 8080
+  port: 9090
 
 app:
   name: salt-learning-web

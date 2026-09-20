@@ -1,0 +1,20 @@
+{% set nginx_defaults = {
+    'port': 80,
+    'worker_processes': 1
+} %}
+
+{% set nginx_pillar = salt['pillar.get']('nginx', {}) %}
+
+{% set nginx = nginx_defaults.copy() %}
+{% do nginx.update(nginx_pillar) %}
+
+
+{% set app_defaults = {
+    'name': 'salt-learning',
+    'environment': 'development'
+} %}
+
+{% set app_pillar = salt['pillar.get']('app', {}) %}
+
+{% set app = app_defaults.copy() %}
+{% do app.update(app_pillar) %}
