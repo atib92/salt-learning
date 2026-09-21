@@ -1,3 +1,3 @@
 nginx:
-  port: 8080
+  port: 9090
   worker_processes: 1
