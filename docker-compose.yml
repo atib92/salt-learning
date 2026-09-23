@@ -27,6 +27,20 @@ services:
     volumes:
       - ./minion/config:/etc/salt/minion.d
       - ./minion/pki:/etc/salt/pki/minion
+  
+  lab-router-1:
+    build:
+      context: .
+      dockerfile: docker/proxy/Dockerfile
+    container_name: lab-router-1
+    hostname: lab-router-1
+    depends_on:
+      - salt-master
+    networks:
+      - salt-net
+    volumes:
+      - ./lab-router-1/config:/etc/salt/proxy.d
+      - ./lab-router-1/pki:/etc/salt/pki/proxy
 
   worker-1:
     build:
