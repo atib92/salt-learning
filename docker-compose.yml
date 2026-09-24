@@ -84,6 +84,25 @@ services:
       - ./web-2/config:/etc/salt/minion.d
       - ./web-2/pki:/etc/salt/pki/minion
 
+  # Simulated device that will be used by the proxy minion
+  sim-device:
+    image: ubuntu:24.04
+    container_name: sim-device
+    hostname: sim-device
+    networks:
+      - salt-net
+    volumes:
+      - ./sim-device:/opt/sim-device
+    command: >
+      bash -c "
+        apt-get update &&
+        apt-get install -y openssh-server &&
+        mkdir -p /run/sshd &&
+        useradd -m -s /bin/bash netadmin &&
+        echo 'netadmin:netadmin' | chpasswd &&
+        /usr/sbin/sshd -D
+      " 
+
 networks:
   salt-net:
     driver: bridge

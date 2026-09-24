@@ -1,4 +1,5 @@
 import logging
+import json
 
 log = logging.getLogger(__name__)
 
@@ -16,9 +17,6 @@ def init(opts):
     log.info("Initializing simulated SSH network device")
 
 
-def ping_1():
-   return True
-
 def ping():
     return {
         "source": "ssh_sample.py",
@@ -34,8 +32,57 @@ def grains():
     }
 
 
+
 def command(command):
-    return f"SIMULATED DEVICE: executed '{command}'"
+    proxy_config = __opts__["proxy"]
+
+    host = proxy_config["host"]
+    username = proxy_config["username"]
+    password = proxy_config["password"]
+
+    log.info("Executing command '%s' on %s", command, host)
+
+    import paramiko
+
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+    try:
+        client.connect(
+            hostname=host,
+            username=username,
+            password=password,
+            timeout=10,
+        )
+
+        remote_command = (
+            f"python3 /opt/sim-device/network_cli.py "
+            f"{command}"
+        )
+
+        stdin, stdout, stderr = client.exec_command(remote_command)
+
+        output = stdout.read().decode().strip()
+        error = stderr.read().decode().strip()
+
+        if error:
+            raise RuntimeError(error)
+
+        return output
+
+    finally:
+        client.close()
 
 def shutdown(opts):
     log.info("Shuttingdown simulated SSH network device")
+
+def get_facts():
+    return json.loads(command("show version --json"))
+
+
+def get_interfaces():
+    return json.loads(command("show interfaces --json"))
+
+
+def get_routes():
+    return json.loads(command("show ip route --json"))

@@ -6,8 +6,10 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \
         gnupg \
-        ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+        ca-certificates \
+        python3-paramiko \
+        openssh-client \
+    && rm -rf /var/lib/apt/lists/*
 
 # Add Salt Project repository
 RUN mkdir -m 755 -p /etc/apt/keyrings && \
@@ -24,5 +26,8 @@ RUN mkdir -m 755 -p /etc/apt/keyrings && \
 RUN apt-get update && \
     apt-get install -y --no-install-recommends salt-minion && \
     rm -rf /var/lib/apt/lists/*
+
+# This proxy minion will ssh to target devices
+RUN /opt/saltstack/salt/bin/python3 -m pip install --no-cache-dir paramiko
 
 CMD ["salt-proxy", "--proxyid", "lab-router-1", "-l", "info"]
